@@ -1,0 +1,57 @@
+pipeline {
+    agent any 
+    environment {
+    DOCKERHUB_CREDENTIALS = credentials('jenkins-dockerhub')
+    }
+    stages { 
+        stage('SCM Checkout') {
+            steps{
+            git 'https://github.com/Lastemperor99/devop-test.git'
+            }
+        }
+
+        stage('Build docker image') {
+            steps {  
+                sh 'docker build -t don1dario/devop-test:$BUILD_NUMBER .'
+            }
+        }
+        stage('login to dockerhub') {
+            steps{
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+            }
+        }
+         stage ('Test with rubocop'){
+            steps{
+                script{
+                    sh 'rubocop .'
+        }
+    }
+}
+        stage('Run RSpec Tests') {
+            steps {
+                script {
+                    try {
+                        // Install any necessary dependencies or gems
+                        sh 'bundle install'
+
+                        // Run RSpec tests
+                        sh 'bundle exec rspec'
+                    } catch (Exception e) {
+                        currentBuild.result = 'FAILURE'
+                        throw e
+                    }
+                }
+            }
+        }       
+        stage('Push image to docker-hub') {
+            steps{
+                sh 'docker push don1dario/devop-test:$BUILD_NUMBER'
+            }
+        }
+}
+post {
+        always {
+            sh 'docker logout'
+        }
+    }
+}
