@@ -1,0 +1,23 @@
+# IDE
+.idea
+
+# Testing
+coverage
+spec/reports
+spec/examples.txt
+
+# Application
+.bundle
+tmp
+log
+
+# Build
+build
+
+# Other
+.env
+
+.byebug_history
+
+# Ignore master key for decrypting credentials and more.
+/config/master.key
