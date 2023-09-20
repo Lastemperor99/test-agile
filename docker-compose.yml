@@ -1,0 +1,21 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=devop_test
+      - POSTGRES_DB=devop_test_development
+    
+  web:
+    build: .
+    volumes:
+      - .:/devop-test
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+        - DATABASE_URL=postgres://postgres:devop_test@db:5432/db?charset=UTF8
