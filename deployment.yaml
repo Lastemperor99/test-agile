@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-agile-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: test-agile
+  template:
+    metadata:
+      labels:
+        app: test-agile
+    spec:
+      containers:
+      - name: test-agile
+        image: don1dario/devop-test:latest
+        ports:
+         - containerPort: 80
+        resources:
+          limits:   # as a best practice
+            cpu: "0.5"  # Set CPU limit to 0.5 CPU cores
+            memory: "512Mi"  # Set memory limit to 512 MiB
+          requests:
+            cpu: "0.1"  # Set CPU request to 0.1 CPU cores
+            memory: "256Mi"  # Set memory request to 256 MiB
+            
